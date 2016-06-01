@@ -10,8 +10,11 @@ namespace Shortener.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
+            return View();
+        }
 
+        public ActionResult List()
+        {
             return View();
         }
     }

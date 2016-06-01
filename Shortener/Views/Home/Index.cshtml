@@ -1,24 +1,60 @@
-﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+﻿
+@{
+    ViewBag.Title = "Home";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        
+        $(function() {
+
+            var vm = function() {
+                var self = this;
+                self.url = ko.observable();
+                self.result = ko.observable();
+                self.create = function() {
+                    $.ajax({
+                        url: '@Url.Content("~")api/create',
+                        data: "'" + self.url() + "'",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8"
+                        })
+                        .success(function(data) {
+                            self.result(data);
+                            console.log('ajax Ok');
+                        }).fail(function() {
+                            alert('Что-то пошло не так!');
+                        });
+                };
+            };
+
+            ko.applyBindings(new vm());
+
+        })
+
+    </script>
+}
+
+<h2>@ViewBag.Title</h2>
+
+<form class="form-horizontal">
+    <div class="form-group">
+        <label for="inputUrl" class="col-sm-2 control-label">URL</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputUrl" placeholder="URL" data-bind="textInput: url">
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    <div class="form-group">
+        <label for="shortUrl" class="col-sm-2 control-label">Результат</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="shortUrl" placeholder="URL" readonly="readonly" data-bind="textInput: result">
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default btn-primary" data-bind="click: create">Сжать!</button>
+        </div>
     </div>
-</div>
+</form>
