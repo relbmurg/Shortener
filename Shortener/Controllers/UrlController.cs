@@ -5,12 +5,20 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Results;
+using Shortener.Core;
 using Shortener.Models;
 
 namespace Shortener.Controllers
 {
     public class UrlController : ApiController
     {
+        private readonly UrlManager _manager;
+
+        public UrlController(UrlManager manager)
+        {
+            _manager = manager;
+        }
+
         [Route("s/{key}")]
         [HttpGet]
         public RedirectResult Trsansfer(string key)
