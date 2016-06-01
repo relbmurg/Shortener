@@ -131,6 +131,11 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UrlController.cs" />
+    <Compile Include="Core\DefaultKeyGenerator.cs" />
+    <Compile Include="Core\IKeyGenerator.cs" />
+    <Compile Include="Core\IUrlStorage.cs" />
+    <Compile Include="Core\MemoryUrlStorage.cs" />
+    <Compile Include="Core\UrlManager.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
