@@ -51,11 +51,21 @@ namespace Shortener.Core
             return url.Short;
         }
 
-        public IEnumerable<ShortUrl> GetUrls()
+        public IEnumerable<ShortUrl> GetUrls(int index, int size, out int total)
         {
-            return _storage.GetAll()
-                .Where(x => x.UserId == UserId)
-                .ToArray();
+            total = 0;
+            var query = _storage.GetAll()
+                                .AsQueryable()
+                                .Where(x => x.UserId == UserId);
+            var page = query.OrderByDescending(x => x.Created)
+                            .Skip(index * size).Take(size)
+                            .GroupBy(p => new { Total = query.Count() })
+                            .FirstOrDefault();
+            if (page == null)
+                return Enumerable.Empty<ShortUrl>();
+
+            total = page.Key.Total;
+            return page.Select(x => x);
         }
 
         public string Find(string key, bool updateRedirects)

@@ -18,20 +18,29 @@
         $(function () {
             var vm = function () {
                 var self = this;
+
+                self.active = false;
+                self.total = ko.observable(0);
+                self.index = ko.observable(0);
+                self.size = ko.observable(10);
+
                 self.items = ko.observableArray([]);
-                self.load = function () {
-                    $.getJSON('@Url.Content("~")api/links', function (data) {
-                        ko.utils.arrayForEach(data, function (item) {
+                self.load = ko.computed(function () {
+                    if (self.active) return;
+                    self.active = true;
+                    $.getJSON('@Url.Content("~")api/links?index=' + self.index() + '&size=' + self.size(), function (data) {
+                        ko.utils.arrayForEach(data.result, function (item) {
                             item.Created = new Date(item.Created).toLocaleString("ru");
                         });
-                        self.items(data);
+                        self.items(data.result);
+                        self.total(data.total);
                         console.log('getJSON OK');
                     }).fail(function () {
                         alert('Что-то пошло не так!');
+                    }).done(function() {
+                        self.active = false;
                     });
-                };
-
-                self.load();
+                }, self);
             };
             ko.applyBindings(new vm());
         })
@@ -49,23 +58,36 @@
     </thead>
 
     <tbody>
-        <!-- ko if: items().length === 0 -->
+    <!-- ko if: items().length === 0 -->
+    <tr>
+        <td colspan="3" class="text-center">
+            нет ссылок
+        </td>
+    </tr>
+    <!-- /ko -->
+    <!-- ko foreach: items -->
+    <tr>
+        <td data-bind="text: Url"></td>
+        <td rowspan="2" class="text-center text-vertical-center" data-bind="text: Created"></td>
+        <td rowspan="2" class="text-center text-vertical-center" data-bind="text: Redirects"></td>
+    </tr>
+    <tr>
+        <td data-bind="text: Short"></td>
+    </tr>
+    <!-- /ko -->
+    </tbody>
+    <tfoot>
         <tr>
-            <td colspan="3" class="text-center">
-                нет ссылок
+            <td>
+                Всего: <span data-bind="text: total"></span>
+            </td>
+            <td colspan="2">
+                <div class="pull-right">
+                    <span>На странице:</span>
+                    <span data-bind="pageSize: items, pager: { current: index, total: total, size: size }"></span>
+                </div>
             </td>
         </tr>
-        <!-- /ko -->
-        <!-- ko foreach: items -->
-        <tr>
-            <td data-bind="text: Url"></td>
-            <td rowspan="2" class="text-center text-vertical-center" data-bind="text: Created"></td>
-            <td rowspan="2" class="text-center text-vertical-center" data-bind="text: Redirects"></td>
-        </tr>
-        <tr>
-            <td data-bind="text: Short"></td>
-        </tr>
-        <!-- /ko -->
-    </tbody>
+    </tfoot>
 </table>
-
+<div data-bind="pagination: items, pager: { current: index, total: total, size: size }"></div>

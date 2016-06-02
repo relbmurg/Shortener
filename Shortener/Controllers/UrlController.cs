@@ -51,17 +51,18 @@ namespace Shortener.Controllers
 
         [Route("api/links")]
         [HttpGet]
-        public HttpResponseMessage Links()
+        public HttpResponseMessage Links(int index, int size)
         {
             var host = Host;
-            var result = _manager.GetUrls().Select(x => new ShortUrlModel
+            int total;
+            var result = _manager.GetUrls(index, size, out total).Select(x => new ShortUrlModel
             {
                 Created = x.Created,
                 Redirects = x.Redirects,
                 Short = CreateUrl(x.Short, host),
                 Url = x.Url
             });
-            return Request.CreateResponse(result);
+            return Request.CreateResponse(new { result, total } );
         }
     }
 }

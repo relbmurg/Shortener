@@ -21,7 +21,8 @@ namespace Shortener
                       "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/js").Include(
-                      "~/Scripts/knockout-{version}.js"));
+                      "~/Scripts/knockout-{version}.js",
+                      "~/Scripts/knockout.bindings.paging.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
