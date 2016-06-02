@@ -63,7 +63,7 @@ namespace Shortener
         {
             kernel.Bind<UrlManager>().ToSelf().InRequestScope();
             kernel.Bind<IKeyGenerator>().To<DefaultKeyGenerator>().InRequestScope();
-            kernel.Bind<IUrlStorage>().To<MemoryUrlStorage>().InSingletonScope();
+            kernel.Bind<IUrlStorage>().To<EntityFrameworkUrlStorage>().InRequestScope().WithConstructorArgument("Default");
         }        
     }
 }
