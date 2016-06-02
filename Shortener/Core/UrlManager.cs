@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Transactions;
-using System.Web;
-using Shortener.Models;
 
 namespace Shortener.Core
 {
@@ -12,10 +11,19 @@ namespace Shortener.Core
         private readonly IUrlStorage _storage;
         private readonly IKeyGenerator _generator;
 
+        public string UserId
+        {
+            get
+            {
+                var identity = (ClaimsIdentity)ClaimsPrincipal.Current.Identity;
+                return identity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            }
+        }
+
         public UrlManager(IUrlStorage storage, IKeyGenerator generator)
         {
             _storage = storage;
-            _generator = generator;
+            _generator = generator; 
         }
 
         public string Save(Uri uri)
@@ -27,7 +35,8 @@ namespace Shortener.Core
             var url = new ShortUrl
             {
                 Created = DateTime.UtcNow,
-                Url = uri.ToString()
+                Url = uri.ToString(),
+                UserId = UserId
             };
 
             using (var trans = new TransactionScope())
@@ -44,7 +53,9 @@ namespace Shortener.Core
 
         public IEnumerable<ShortUrl> GetUrls()
         {
-            return _storage.GetAll();
+            return _storage.GetAll()
+                .Where(x => x.UserId == UserId)
+                .ToArray();
         }
 
         public string Find(string key, bool updateRedirects)

@@ -12,5 +12,6 @@ namespace Shortener.Core
         public string Short { get; set; }
         public DateTime Created { get; set; }
         public int Redirects { get; set; }
+        public string UserId { get; set; }
     }
 }

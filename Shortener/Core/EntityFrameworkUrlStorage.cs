@@ -10,6 +10,11 @@ namespace Shortener.Core
     {
         public DbSet<ShortUrl> Urls { get; set; }
 
+        public EntityFrameworkUrlStorage()
+        {
+            
+        }
+
         public EntityFrameworkUrlStorage(string connectionStringName) 
             : base(connectionStringName)
         {

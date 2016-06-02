@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.Results;
 using Shortener.Core;
 using Shortener.Models;
 
 namespace Shortener.Controllers
 {
+    [Authorize]
     public class UrlController : ApiController
     {
         private readonly UrlManager _manager;
@@ -33,6 +31,7 @@ namespace Shortener.Controllers
 
         [Route("s/{key}")]
         [HttpGet]
+        [AllowAnonymous]
         public IHttpActionResult Trsansfer(string key)
         {
             var url = _manager.Find(key, true);
