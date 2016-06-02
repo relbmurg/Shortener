@@ -76,6 +76,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -156,6 +157,7 @@
     <Compile Include="Core\IKeyGenerator.cs" />
     <Compile Include="Core\IUrlStorage.cs" />
     <Compile Include="Core\MemoryUrlStorage.cs" />
+    <Compile Include="Core\ShortUrl.cs" />
     <Compile Include="Core\UrlManager.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

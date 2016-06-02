@@ -13,31 +13,56 @@ namespace Shortener.Controllers
     public class UrlController : ApiController
     {
         private readonly UrlManager _manager;
+        private readonly string _roteFormat;
+
+        string CreateUrl(string key, string host)
+        {
+            return String.Format(_roteFormat, host, key);
+        }
+
+        public string Host
+        {
+            get { return Request.RequestUri.GetLeftPart(UriPartial.Authority); }
+        }
 
         public UrlController(UrlManager manager)
         {
             _manager = manager;
+            _roteFormat = "{0}/s/{1}";
         }
 
         [Route("s/{key}")]
         [HttpGet]
-        public RedirectResult Trsansfer(string key)
+        public IHttpActionResult Trsansfer(string key)
         {
-            return Redirect(new Uri("https://www.google.com"));
+            var url = _manager.Find(key, true);
+            if (String.IsNullOrWhiteSpace(url))
+                return NotFound();
+
+            return Redirect(new Uri(url));
         }
 
         [Route("api/create")]
         [HttpPost]
         public HttpResponseMessage Create([FromBody] string url)
         {
-            return Request.CreateResponse(url);
+            var result = _manager.Save(new Uri(url));
+            return Request.CreateResponse(CreateUrl(result, Host));
         }
 
         [Route("api/links")]
         [HttpGet]
         public HttpResponseMessage Links()
         {
-            return Request.CreateResponse(Enumerable.Empty<ShortUrlModel>());
+            var host = Host;
+            var result = _manager.GetUrls().Select(x => new ShortUrlModel
+            {
+                Created = x.Created,
+                Redirects = x.Redirects,
+                Short = CreateUrl(x.Short, host),
+                Url = x.Url
+            });
+            return Request.CreateResponse(result);
         }
     }
 }

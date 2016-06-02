@@ -14,6 +14,7 @@
                 self.url = ko.observable();
                 self.result = ko.observable();
                 self.create = function() {
+                    self.result(undefined);
                     $.ajax({
                         url: '@Url.Content("~")api/create',
                         data: "'" + self.url() + "'",

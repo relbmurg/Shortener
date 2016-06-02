@@ -8,5 +8,10 @@ namespace Shortener.Core
 {
     public interface IUrlStorage
     {
+        IEnumerable<ShortUrl> GetAll();
+        ShortUrl GetByUrl(string url);
+        ShortUrl GetByKey(string key);
+        void Add(ShortUrl url);
+        void Update(ShortUrl url);
     }
 }

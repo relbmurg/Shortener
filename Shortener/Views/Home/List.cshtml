@@ -11,7 +11,10 @@
                 var self = this;
                 self.items = ko.observableArray([]);
                 self.load = function() {
-                    $.getJSON('@Url.Content("~")api/links', function(data) {
+                    $.getJSON('@Url.Content("~")api/links', function (data) {
+                        ko.utils.arrayForEach(data, function(item) {
+                            item.Created = new Date(item.Created).toLocaleString("ru");
+                        });
                         self.items(data);
                         console.log('getJSON OK');
                     }).fail(function() {
@@ -27,7 +30,7 @@
 }
 
 <h2>@ViewBag.Title</h2>
-<table class="table table-striped">
+<table class="table table-condensed table-bordered">
     <thead>
         <tr>
             <th>ссылка</th>
@@ -39,7 +42,7 @@
     <tr>
         <td data-bind="text: Url"></td>
         <td rowspan="2" data-bind="text: Created"></td>
-        <td rowspan="2" data-bind="Redirects"></td>
+        <td rowspan="2" data-bind="text: Redirects"></td>
     </tr>
     <tr>
         <td data-bind="text: Short"></td>

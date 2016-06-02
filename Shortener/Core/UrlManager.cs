@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using System.Web;
 using Shortener.Models;
 
@@ -19,12 +20,42 @@ namespace Shortener.Core
 
         public string Save(Uri uri)
         {
-            return uri.OriginalString;
+            var stored = _storage.GetByUrl(uri.ToString());
+            if (stored != null)
+                return stored.Short;
+
+            var url = new ShortUrl
+            {
+                Created = DateTime.UtcNow,
+                Url = uri.ToString()
+            };
+
+            using (var trans = new TransactionScope())
+            {
+                _storage.Add(url);
+                url.Short = _generator.Create(url.Id);
+                _storage.Update(url);
+
+                trans.Complete();
+            }
+
+            return url.Short;
         }
 
-        public IEnumerable<ShortUrlModel> GetUrls()
+        public IEnumerable<ShortUrl> GetUrls()
         {
-            return Enumerable.Empty<ShortUrlModel>();
-        } 
+            return _storage.GetAll();
+        }
+
+        public string Find(string key, bool updateRedirects)
+        {
+            var url = _storage.GetByKey(key);
+            if (url == null || !updateRedirects) return url?.Url;
+
+            url.Redirects++;
+            _storage.Update(url);
+
+            return url.Url;
+        }
     }
 }

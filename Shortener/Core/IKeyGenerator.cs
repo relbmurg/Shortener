@@ -8,6 +8,6 @@ namespace Shortener.Core
 {
     public interface IKeyGenerator
     {
-        string Create(string value);
+        string Create(long value);
     }
 }
