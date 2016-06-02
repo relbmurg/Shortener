@@ -29,6 +29,10 @@
                             alert('Что-то пошло не так!');
                         });
                 };
+
+                self.url.subscribe(function() {
+                    self.result(undefined);
+                });
             };
 
             ko.applyBindings(new vm());
@@ -37,8 +41,6 @@
 
     </script>
 }
-
-<h2>@ViewBag.Title</h2>
 
 <form class="form-horizontal">
     <div class="form-group">

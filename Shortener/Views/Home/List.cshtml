@@ -3,21 +3,30 @@
     ViewBag.Title = "List";
 }
 
+@section header
+{
+    <style>
+         .text-vertical-center {
+             vertical-align: middle !important;
+         }
+    </style>
+}
+
 @section scripts
 {
     <script type="text/javascript">
-        $(function() {
-            var vm = function() {
+        $(function () {
+            var vm = function () {
                 var self = this;
                 self.items = ko.observableArray([]);
-                self.load = function() {
+                self.load = function () {
                     $.getJSON('@Url.Content("~")api/links', function (data) {
-                        ko.utils.arrayForEach(data, function(item) {
+                        ko.utils.arrayForEach(data, function (item) {
                             item.Created = new Date(item.Created).toLocaleString("ru");
                         });
                         self.items(data);
                         console.log('getJSON OK');
-                    }).fail(function() {
+                    }).fail(function () {
                         alert('Что-то пошло не так!');
                     });
                 };
@@ -38,15 +47,25 @@
             <th>переходы</th>
         </tr>
     </thead>
-    <tbody data-bind="foreach: items">
-    <tr>
-        <td data-bind="text: Url"></td>
-        <td rowspan="2" data-bind="text: Created"></td>
-        <td rowspan="2" data-bind="text: Redirects"></td>
-    </tr>
-    <tr>
-        <td data-bind="text: Short"></td>
-    </tr>
+
+    <tbody>
+        <!-- ko if: items().length === 0 -->
+        <tr>
+            <td colspan="3" class="text-center">
+                нет ссылок
+            </td>
+        </tr>
+        <!-- /ko -->
+        <!-- ko foreach: items -->
+        <tr>
+            <td data-bind="text: Url"></td>
+            <td rowspan="2" class="text-center text-vertical-center" data-bind="text: Created"></td>
+            <td rowspan="2" class="text-center text-vertical-center" data-bind="text: Redirects"></td>
+        </tr>
+        <tr>
+            <td data-bind="text: Short"></td>
+        </tr>
+        <!-- /ko -->
     </tbody>
 </table>
 
