@@ -11,15 +11,16 @@ namespace Shortener.Core
         static readonly int baseNum = 62;
         static readonly String baseDigits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-        public string Create(long value)
+        public string Create(ShortUrl url)
         {
-            var toValue = new StringBuilder(value == 0 ? "0" : "");
+            var id = url.Id;
+            var toValue = new StringBuilder(id == 0 ? "0" : "");
 
-            while (value != 0)
+            while (id != 0)
             {
-                int mod = (int)(value % baseNum);
+                int mod = (int)(id % baseNum);
                 toValue.Insert(0, baseDigits.Substring(mod, 1));
-                value = value / baseNum;
+                id = id / baseNum;
             }
 
             return toValue.ToString();

@@ -42,7 +42,7 @@ namespace Shortener.Core
             using (var trans = new TransactionScope())
             {
                 _storage.Add(url);
-                url.Short = _generator.Create(url.Id);
+                url.Short = _generator.Create(url);
                 _storage.Update(url);
 
                 trans.Complete();
